@@ -1,28 +1,40 @@
-Todo.sh add-ons let you add new todo.sh actions or change (override) default actions.  See [[Creating and Installing Add-ons]] for more info.
+# Creating Add-ons: Examples
+
+Todo.sh add-ons let you add new todo.sh actions or change (override) default
+actions. See [[Creating and Installing Add-ons]] for more info.
 
 ## Example: overriding a built-in command
 
-Here is one example to override the "add" command. This is done in bash but note that you can do it in any language you want (in which case parsing the config file may be a bit harder).
+Here is one example to override the "add" command. This is done in bash but note
+that you can do it in any language you want (in which case parsing the config
+file may be a bit harder).
 
-### Proposed features:
+### Proposed features
 
-We'll allow to add an item and mark it as done in one shot with the following syntax:
-
-```bash
-$ todo.sh add x Helping colleague to install Linux
-```
-
-Why such a feature? Because some of us are using todo.sh to track all their activities, not only those which are planned for later, therefore "to do". Why "x" and not just "do"? Because there is a big risk that some of the actual todos will start with "Do something...", and "x" comes from the "x" marker put on done items by `todo.sh do`.
-
-And as we're hacking the "add" anyway, let's also allow to set a priority when adding an item using the following syntax:
+We'll allow to add an item and mark it as done in one shot with the following
+syntax:
 
 ```bash
-$ todo.sh add pri A "Need to write plugin example on Gina's wiki"
+todo.sh add x Helping colleague to install Linux
 ```
 
-### Implementation:
+Why such a feature? Because some of us are using todo.sh to track all their
+activities, not only those which are planned for later, therefore "to do". Why
+"x" and not just "do"? Because there is a big risk that some of the actual
+todos will start with "Do something...", and "x" comes from the "x" marker put
+on done items by `todo.sh do`.
 
-The first argument is either the action itself or the keyword "usage", in which case we'll display some help and exit:
+And as we're hacking the "add" anyway, let's also allow to set a priority when
+adding an item using the following syntax:
+
+```bash
+todo.sh add pri A "Need to write plugin example on Gina's wiki"
+```
+
+### Implementation
+
+The first argument is either the action itself or the keyword "usage", in which
+case we'll display some help and exit:
 
 ```bash
 #!/bin/bash
@@ -42,7 +54,9 @@ shift
 }
 ```
 
-Then the core of our customized action: are we in the regular "add" case or in the custom cases of marking the item as done immediately or prioritized immediately?
+Then the core of our customized action: are we in the regular "add" case or in
+the custom cases of marking the item as done immediately or prioritized
+immediately?
 
 ```bash
 PRIORITY=false
@@ -57,10 +71,12 @@ elif [ x"$1" = x"x" ]; then
 fi
 ```
 
-Doing what we've to do: here the environment variable $TODO_SH can be used to call back the `todo.sh` script wherever it is and no matter how it's called. 
+Doing what we've to do: here the environment variable $TODO_SH can be used to
+call back the `todo.sh` script wherever it is and no matter how it's called.
 
-Because we want to use the original built-in "add" we call todo.sh with the action "command add" in the same spirit of the bash "command".
-As we've sourced the config file, the todo file is reachable with `$TODO_FILE`.
+Because we want to use the original built-in "add" we call todo.sh with the
+action "command add" in the same spirit of the bash "command". As we've sourced
+the config file, the todo file is reachable with `$TODO_FILE`.
 
 ```bash
 if "$TODO_SH" command add "$@"; then
