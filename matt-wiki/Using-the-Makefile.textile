@@ -1,0 +1,15 @@
+h2. To Run Tests
+
+<pre>make test</pre>
+
+See also the README in the tests directory for more.
+
+h2. To Package a Distribution
+
+Make sure all changes are committed, and tag the current state of the repo.
+<pre>git tag -a v2.1 -m "Historical v2.1"</pre>
+
+Then, run the Makefile dist action:
+<pre>make dist</pre>
+
+This will create .zip and .tar archives to upload to the Downloads section.

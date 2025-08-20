@@ -1,0 +1,149 @@
+*Access todo.sh from anywhere in the file tree.* Add the following to your @~/.bashrc@ file (@~/.bash_profile@ for Mac and Cygwin users):
+
+<pre>
+PATH=$PATH:"/path/to/your/todo/scripts"
+</pre>
+
+*Avoid typing todo.sh every time.* Add the following to your @~/.bashrc@ file (@~/.bash_profile@ for Mac and Cygwin users):
+
+<pre>
+alias t='./todo.sh -d /path/to/your/todo.cfg'
+</pre>
+
+Then you simply type @t add laundry@ from anywhere in your file tree to add a task.
+
+You can set the default action by setting "TODOTXT_DEFAULT_ACTION".
+
+You can combine the above alias with the default action so that typing @t@ lists your outstanding items.
+
+*Allow @t@ to list outstanding tasks* Add the following to your @~/.bashrc@ file (@~/.bash_profile@ for Mac and Cygwin users):
+<pre><code>export TODOTXT_DEFAULT_ACTION=ls
+alias t='./todo.sh -d /path/to/your/todo.cfg'</code></pre>
+
+You can still type @t add laundry@ from anywhere to add a task, but now you can just type @t@ to list your current tasks.
+
+*Sort your output by priority, then by number:* Find @export TODOTXT_SORT_COMMAND@ in your configuration file, and set it as follows:
+<pre><code>export TODOTXT_SORT_COMMAND='env LC_COLLATE=C sort -k 2,2 -k 1,1n'
+</code></pre>
+
+*Hide the configuration file by renaming it @.todo.cfg@.*
+
+*Access your remote server's @todo.txt@ via ssh.* If you have a shell account on @remote.server.com@, alias your @todo.sh@ commands to do the same thing as usual but prepend @ssh username@remote.server.com@ to them. Something like:
+
+<pre>
+ssh -qt username@remote.server.com todo.sh list
+</pre>
+
+Displays the remote todo list.
+
+If you often have an open ssh session to @remote.server.com@ consider appending the following to your @~/.ssh/config@ file:
+
+<pre>
+Host *
+ControlPath ~/.ssh/master-%r@%h:%p
+ControlMaster auto
+</pre>
+
+This causes ssh to use the existing connection rather than opening new ones. The speed up for additional connections is amazing.
+
+*Integrate your todo.txt onto your desktop*
+
+* "Windows with Samurize":http://lifehacker.com/software/plain-text/download-of-the-day-samurize-189273.php
+* "Mac OS X with GeekTool":http://www.lifehacker.com/software/top/download-of-the-day--geektool-185802.php
+* [[Linux with Conky]]
+* [[Linux with E17]]
+
+*High Color Support*
+xterm-based terminals, including Putty for Windows, support 256 colors instead of just 16. Here are some sample colors (including backgrounds) that you can paste into your config file right before the PRIORITY COLORS section. Check http://www.frexx.de/xterm-256-notes/ for a hex-to-xterm converter to get exactly the color you want.
+
+<pre>
+### === HIGH-COLOR === compatible with most terms including putty
+### for windows... use colors that don't make your eyes bleed :)
+export PINK='\\033[38;5;211m'
+export ORANGE='\\033[38;5;203m'
+export SKYBLUE='\\033[38;5;111m'
+export MEDIUMGREY='\\033[38;5;246m'
+export LAVENDER='\\033[38;5;183m'
+export TAN='\\033[38;5;179m'
+export FOREST='\\033[38;5;22m'
+export MAROON='\\033[38;5;52m'
+export HOTPINK='\\033[38;5;198m'
+export MINTGREEN='\\033[38;5;121m'
+export LIGHTORANGE='\\033[38;5;215m'
+export LIGHTRED='\\033[38;5;203m'
+export JADE='\\033[38;5;35m'
+export LIME='\\033[38;5;154m'
+### background colors
+export PINK_BG='\\033[48;5;211m'
+export ORANGE_BG='\\033[48;5;203m'
+export SKYBLUE_BG='\\033[48;5;111m'
+export MEDIUMGREY_BG='\\033[48;5;246m'
+export LAVENDER_BG='\\033[48;5;183m'
+export TAN_BG='\\033[48;5;179m'
+export FOREST_BG='\\033[48;5;22m'
+export MAROON_BG='\\033[48;5;52m'
+export HOTPINK_BG='\\033[48;5;198m'
+export MINTGREEN_BG='\\033[48;5;121m'
+export LIGHTORANGE_BG='\\033[48;5;215m'
+export LIGHTRED_BG='\\033[48;5;203m'
+export JADE_BG='\\033[48;5;35m'
+export LIME_BG='\\033[48;5;154m'
+### extra attributes
+export UNDERLINE='\\033[4m'
+
+### sample of combining foreground and background
+# export PRI_A=$HOTPINK$MEDIUMGREY_BG$UNDERLINE
+
+</pre>
+
+
+*Syncing todo.txt with ownCloud and webDav.* 
+
+*Requirements:* 
+  ownCloud instance URL & credentials. <br>
+  ownCloud sync client for method 1  <br>
+  davfs2 support for method 2  <br>
+
+ 
+*Method 1: ownCloud Sync Client*
+  
+   # Install the ownCloud Sync Agent. Directions "here":http://owncloud.org/sync-clients/ <br>
+   # Copy all of your todo.txt scripts, text files, and add-ons to a directory within the <br>
+      default ownCloud sync directory. (Optionally you can create a hard link to the ownCloud 
+      directory but symlinks do NOT work with the ownCloud sync client at this time).<br>
+   # Follow the process described in: <br>**"Access todo.sh from anywhere in the file tree"** and **"Avoid typing todo.sh every time"**  <br> 
+  
+  *Notes:* <br>
+
+         * Do this on all the devices where you would like your todo list available.<br>
+        
+         * If the sync client is not an option or if it doesn't work so well for your distro <br>
+           try method 2. <br>
+ 
+*Method 2: WebDav mount.*   
+   
+   # Install davfs2 support on your distro of choice. Directions for the command line and <br>
+      the gui for most operating systems can be found "here":http://doc.owncloud.org/server/4.5/user_manual/connecting_webdav.html <br>
+   #   Copy all of your todo.txt scripts, text files, and add-ons to a directory within the webDav mount and follow step 3 of Method1. <br>
+   #  A few options to consider: <br>
+
+         * Make the file system mount automatically using fstab.  <br>
+         * Use the guid and uid parameters on fstab to set group ownership and then add <br>
+           users you'd like to give todo.txt access to instead of relying on the user <br>
+           who mounts the webdav. <br>
+         * Don't forget the 'exec' parameter. By default webdav won't let you <br>
+           execute any files even if you change their file permissions!<br>
+         * Read the mount.davfs2 man page for more exciting and useful options!<br>
+
+    *Special Note!:*  <br>
+      
+       You will receive errors when you try any of the todo.txt features that require in-place 
+       editing of files. You may receive an error like "sed: cannot rename /todo.txt: 
+       I/O error. To ensure you don't receive any errors, and can continue to happily use 
+       ownCloud to sync your todo lists, disable file locks in davfs2.conf. 
+       
+       Set use_locks to 0 in /etc/davfs2/davfs2.conf:
+                 <pre>
+                  #use_locks 1
+                   use_locks 0
+                 </pre>
